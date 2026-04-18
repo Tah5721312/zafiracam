@@ -13,6 +13,7 @@ export function Camera({ onCapture, onImageUpload }: CameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const nativeCameraInputRef = useRef<HTMLInputElement>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -20,18 +21,47 @@ export function Camera({ onCapture, onImageUpload }: CameraProps) {
   const startCamera = useCallback(async () => {
     setError(null);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: 512, height: 512 },
+      // Use ideal instead of exact to avoid constraint errors on some mobile devices
+      const constraints = {
+        video: { 
+          facingMode: 'user', 
+          width: { ideal: 512 }, 
+          height: { ideal: 512 } 
+        },
         audio: false,
-      });
+      };
+
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        // Explicitly play the video, as autoPlay can be unreliable on some mobile browsers
+        try {
+          await videoRef.current.play();
+        } catch (playError) {
+          console.warn('Video play interrupted or failed:', playError);
+        }
       }
       setIsCameraOpen(true);
     } catch (err) {
-      setError('Camera access denied. Please use upload instead.');
-      console.error('Camera error:', err);
+      console.error('Initial camera access failed, trying fallback:', err);
+      
+      // Fallback to simplest constraints if the preferred ones fail
+      try {
+        const fallbackStream = await navigator.mediaDevices.getUserMedia({ 
+          video: true,
+          audio: false 
+        });
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = fallbackStream;
+          await videoRef.current.play();
+        }
+        setIsCameraOpen(true);
+      } catch (fallbackErr) {
+        setError('تعذر فتح الكاميرا. يرجى التأكد من إعطاء الصلاحية أو استخدام خيار الرفع.');
+        console.error('Camera fallback error:', fallbackErr);
+      }
     }
   }, []);
 
@@ -126,6 +156,10 @@ export function Camera({ onCapture, onImageUpload }: CameraProps) {
     fileInputRef.current?.click();
   }, []);
 
+  const triggerNativeCamera = useCallback(() => {
+    nativeCameraInputRef.current?.click();
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -153,13 +187,21 @@ export function Camera({ onCapture, onImageUpload }: CameraProps) {
               Take a selfie or upload a photo to try on avatars
             </p>
 
-            <div className="flex gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               <button
                 onClick={startCamera}
                 className="flex items-center gap-2 px-6 py-3 bg-gold-500 hover:bg-gold-400 text-black font-medium rounded-full transition-all transform hover:scale-105"
               >
                 <CameraIcon size={20} />
-                Open Camera
+                Webcam
+              </button>
+              
+              <button
+                onClick={triggerNativeCamera}
+                className="flex items-center gap-2 px-6 py-3 bg-gold-500 hover:bg-gold-400 text-black font-medium rounded-full transition-all transform hover:scale-105"
+              >
+                <CameraIcon size={20} />
+                Mobile Camera
               </button>
               
               <button
@@ -175,6 +217,15 @@ export function Camera({ onCapture, onImageUpload }: CameraProps) {
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            
+            <input
+              ref={nativeCameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="user"
               onChange={handleFileUpload}
               className="hidden"
             />
