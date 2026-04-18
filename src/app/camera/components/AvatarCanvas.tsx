@@ -183,15 +183,15 @@ export function AvatarCanvas({
 
       {/* Face preview - Draggable & Resizable */}
       {faceImageData && !showFaceArea && (
-        <motion.div 
+        <motion.div
           drag
           dragMomentum={false}
           onDrag={(_, info) => {
             onOffsetChange(faceOffsetX + info.delta.x, faceOffsetY + info.delta.y);
           }}
           className="absolute top-3 left-1/2 -translate-x-1/2 cursor-grab active:cursor-grabbing z-50"
-          style={{ 
-            x: faceOffsetX, 
+          style={{
+            x: faceOffsetX,
             y: faceOffsetY,
             width: 48 * (faceScale / 0.62), // Dynamic width
             height: 64 * (faceScale / 0.62) // Dynamic height
@@ -205,7 +205,7 @@ export function AvatarCanvas({
                 alt="Face preview"
                 className="w-full h-full rounded-full object-cover border border-gold-500/30 shadow-lg bg-black/40 pointer-events-none"
               />
-              
+
               {/* Resize Handle - appears on hover */}
               <motion.div
                 drag

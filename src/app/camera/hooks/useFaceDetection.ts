@@ -14,16 +14,16 @@ export function useFaceDetection() {
 
   const loadModels = useCallback(async () => {
     if (modelsLoadedRef.current) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       await Promise.all([
         faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
         faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
       ]);
-      
+
       modelsLoadedRef.current = true;
       setIsModelLoaded(true);
     } catch (err) {
