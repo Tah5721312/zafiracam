@@ -11,6 +11,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { FavoritesDrawer } from "@/components/favorites/FavoritesDrawer";
 import { ProductModal } from "@/components/ProductModal";
 import { VideoModal, VideoButton } from "@/components/VideoModal";
+import { SizeGuide } from "@/components/SizeGuide";
 import type { Product } from "@/app/data/products";
 
 // Use categories from products data file
@@ -68,6 +69,7 @@ export default function FeaturedProducts() {
                 onClick={() => setIsVideoModalOpen(true)}
                 className="mb-8"
               />
+              <SizeGuide />
             </div>
 
             {/* Category Filter */}

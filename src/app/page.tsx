@@ -18,14 +18,16 @@ export default function Home() {
       <FloatingIcons />
       <HeroSlider />
       <UnboxingExperience />
+
       <FeaturedProducts />
+
       <CategoriesShowcase />
       <BrandStory />
       <Newsletter />
       <Footer />
-      
+
       {/* Floating Camera Button */}
-      <a 
+      <a
         href="/camera"
         className="fixed bottom-8 right-8 w-16 h-16 bg-gold-500 hover:bg-gold-400 text-black rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-110 z-50 border-2 border-gold-600"
         aria-label="Open Avatar Camera"

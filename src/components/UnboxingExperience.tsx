@@ -1,9 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { Gift, Scroll, Package, Mail } from "lucide-react";
+import { useRef, useState } from "react";
+import { Gift, Scroll, Package, Mail, X, Tag } from "lucide-react";
+import Image from "next/image";
 
 const unboxingStages = [
   {
@@ -35,85 +36,150 @@ const unboxingStages = [
 export default function UnboxingExperience() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [isOffersModalOpen, setIsOffersModalOpen] = useState(false);
 
   return (
-    <section ref={ref} className="relative py-32 bg-obsidian-950 overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50c0-27.614-22.386-50-50-50s-50 22.386-50 50 22.386 50 50 50 50-22.386 50-50zm0 0c0 27.614 22.386 50 50 50s50-22.386 50-50-22.386-50-50-50-50 22.386-50 50z' fill='%23c99a2e' fill-opacity='0.4'/%3E%3C/svg%3E")`,
-          backgroundSize: '100px 100px'
-        }} />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
-          <span className="inline-block text-gold-400 text-sm tracking-[0.3em] uppercase mb-4">
-            The Experience
-          </span>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-            The <span className="text-gold-400">Unboxing</span> Ritual
-          </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-            A refined, four-stage process that prioritizes tactile luxury and emotional storytelling. 
-            Transforming a simple purchase into a "triumph of spirit" through high-contrast colors and sophisticated materials.
-          </p>
-        </motion.div>
-
-        {/* Unboxing Stages */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {unboxingStages.map((stage, index) => (
-            <motion.div
-              key={stage.title}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="group relative"
-            >
-              <div className="relative bg-obsidian-900/50 border border-gold-500/10 rounded-sm overflow-hidden
-                            hover:border-gold-500/30 transition-all duration-500 luxury-card">
-                {/* Stage Number */}
-                <div className="absolute top-4 right-4 w-8 h-8 border border-gold-500/30 rounded-full 
-                              flex items-center justify-center">
-                  <span className="text-gold-400 text-sm font-serif">{index + 1}</span>
-                </div>
-
-                {/* Image */}
-                <div className="relative h-48 overflow-hidden image-zoom">
-                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian-900 to-transparent z-10" />
-                  <div className="w-full h-full bg-gradient-to-br from-gold-900/20 to-obsidian-800 
-                                flex items-center justify-center">
-                    <stage.icon className="w-16 h-16 text-gold-500/30" />
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <h3 className="font-serif text-xl text-white mb-3 group-hover:text-gold-400 
-                               transition-colors duration-300">
-                    {stage.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    {stage.description}
-                  </p>
-                </div>
-
-                {/* Hover Line */}
-                <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-gold-500 to-gold-300
-                              group-hover:w-full transition-all duration-500" />
-              </div>
-            </motion.div>
-          ))}
+    <>
+      <section ref={ref} className="relative py-32 bg-obsidian-950 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50c0-27.614-22.386-50-50-50s-50 22.386-50 50 22.386 50 50 50 50-22.386 50-50zm0 0c0 27.614 22.386 50 50 50s50-22.386 50-50-22.386-50-50-50-50 22.386-50 50z' fill='%23c99a2e' fill-opacity='0.4'/%3E%3C/svg%3E")`,
+            backgroundSize: '100px 100px'
+          }} />
         </div>
 
-   
-      </div>
-    </section>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-20"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsOffersModalOpen(true)}
+              className="mb-8 px-8 py-3 bg-gradient-to-r from-gold-500 to-gold-600 
+                       text-obsidian-950 text-sm font-bold tracking-[0.2em] uppercase rounded-full 
+                       hover:from-gold-400 hover:to-gold-500 transition-all shadow-lg 
+                       shadow-gold-500/20 flex items-center gap-3 mx-auto border border-gold-400/20"
+            >
+              <Tag className="w-5 h-5" />
+              Offers
+              <Tag className="w-5 h-5" />
+
+            </motion.button>
+
+            <span className="inline-block text-gold-400 text-sm tracking-[0.3em] uppercase mb-4">
+              The Experience
+            </span>
+            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white mb-6">
+              The <span className="text-gold-400">Unboxing</span> Ritual
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
+              A refined, four-stage process that prioritizes tactile luxury and emotional storytelling.
+              Transforming a simple purchase into a "triumph of spirit" through high-contrast colors and sophisticated materials.
+            </p>
+          </motion.div>
+
+          {/* Unboxing Stages */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {unboxingStages.map((stage, index) => (
+              <motion.div
+                key={stage.title}
+                initial={{ opacity: 0, y: 40 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                className="group relative"
+              >
+                <div className="relative bg-obsidian-900/50 border border-gold-500/10 rounded-sm overflow-hidden
+                            hover:border-gold-500/30 transition-all duration-500 luxury-card">
+                  {/* Stage Number */}
+                  <div className="absolute top-4 right-4 w-8 h-8 border border-gold-500/30 rounded-full 
+                              flex items-center justify-center">
+                    <span className="text-gold-400 text-sm font-serif">{index + 1}</span>
+                  </div>
+
+                  {/* Image */}
+                  <div className="relative h-48 overflow-hidden image-zoom">
+                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian-900 to-transparent z-10" />
+                    <div className="w-full h-full bg-gradient-to-br from-gold-900/20 to-obsidian-800 
+                                flex items-center justify-center">
+                      <stage.icon className="w-16 h-16 text-gold-500/30" />
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6">
+                    <h3 className="font-serif text-xl text-white mb-3 group-hover:text-gold-400 
+                               transition-colors duration-300">
+                      {stage.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      {stage.description}
+                    </p>
+                  </div>
+
+                  {/* Hover Line */}
+                  <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-gold-500 to-gold-300
+                              group-hover:w-full transition-all duration-500" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+
+        </div>
+      </section>
+
+      <AnimatePresence>
+        {isOffersModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-obsidian-950/90 backdrop-blur-xl"
+              onClick={() => setIsOffersModalOpen(false)}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-5xl bg-obsidian-900/50 border border-gold-500/10 
+                         rounded-2xl overflow-hidden z-10 shadow-2xl"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsOffersModalOpen(false)}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md 
+                           flex items-center justify-center text-white hover:text-gold-400 
+                           transition-colors z-20 border border-white/10"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div className="relative w-full max-h-[85vh] aspect-[16/9] bg-obsidian-950">
+                <Image
+                  src="/images/slider6.png"
+                  alt="Available Offers"
+                  fill
+                  className="object-contain p-2 md:p-6"
+                  priority
+                />
+              </div>
+
+              <div className="p-6 bg-gradient-to-t from-black to-obsidian-900 border-t border-gold-500/10 text-center">
+                <h3 className="text-gold-500 font-serif text-xl tracking-widest uppercase">Special Offers</h3>
+                <p className="text-gray-400 text-sm mt-1">Exclusive discounts and seasonal collections</p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

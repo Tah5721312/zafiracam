@@ -14,6 +14,7 @@ const desktopSlides = [
     id: 2,
     image: "/images/slider2.PNG",
   },
+
 ];
 
 // Mobile slides
@@ -26,6 +27,7 @@ const mobileSlides = [
     id: 2,
     image: "/images/slider4.png",
   },
+
 ];
 
 export default function HeroSlider() {
@@ -74,7 +76,7 @@ export default function HeroSlider() {
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ 
+          transition={{
             opacity: { duration: 1 },
             scale: { duration: 8, ease: "linear" }
           }}
@@ -99,9 +101,8 @@ export default function HeroSlider() {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`relative h-1 transition-all duration-500 overflow-hidden ${
-              index === currentSlide ? "w-16 bg-gold-500/30" : "w-8 bg-white/20 hover:bg-white/40"
-            }`}
+            className={`relative h-1 transition-all duration-500 overflow-hidden ${index === currentSlide ? "w-16 bg-gold-500/30" : "w-8 bg-white/20 hover:bg-white/40"
+              }`}
           >
             {index === currentSlide && (
               <motion.div

@@ -168,7 +168,7 @@ export function AvatarCanvas({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        className="w-full max-w-[400px] h-auto rounded-2xl shadow-2xl cursor-move border border-gold-500/30"
+        className="w-full max-w-[400px] h-auto rounded-2xl shadow-2xl cursor-move border border-gold-500/30 bg-white"
       />
 
       {/* Controls */}
