@@ -81,7 +81,8 @@ export function AvatarCanvas({
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw avatar first (as background)
+
+    // Draw avatar on top (assumes the avatar has a transparent hole for the face)
     if (avatarImage) {
       ctx.drawImage(avatarImage, 0, 0, canvas.width, canvas.height);
     }
@@ -180,17 +181,53 @@ export function AvatarCanvas({
         </button>
       </div>
 
-      {/* Face preview */}
+      {/* Face preview - Draggable & Resizable */}
       {faceImageData && !showFaceArea && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2">
+        <motion.div 
+          drag
+          dragMomentum={false}
+          onDrag={(_, info) => {
+            onOffsetChange(faceOffsetX + info.delta.x, faceOffsetY + info.delta.y);
+          }}
+          className="absolute top-3 left-1/2 -translate-x-1/2 cursor-grab active:cursor-grabbing z-50"
+          style={{ 
+            x: faceOffsetX, 
+            y: faceOffsetY,
+            width: 48 * (faceScale / 0.62), // Dynamic width
+            height: 64 * (faceScale / 0.62) // Dynamic height
+          }}
+          whileHover="hover"
+        >
           {facePreviewUrl && (
-            <img
-              src={facePreviewUrl}
-              alt="Face preview"
-              className="w-12 h-16 rounded-full object-cover border border-gold-500/30 shadow-lg bg-black/40"
-            />
+            <div className="relative w-full h-full">
+              <img
+                src={facePreviewUrl}
+                alt="Face preview"
+                className="w-full h-full rounded-full object-cover border border-gold-500/30 shadow-lg bg-black/40 pointer-events-none"
+              />
+              
+              {/* Resize Handle - appears on hover */}
+              <motion.div
+                drag
+                dragMomentum={false}
+                dragConstraints={{ left: 0, top: 0, right: 0, bottom: 0 }}
+                onDrag={(_, info) => {
+                  const sensitivity = 0.005;
+                  const newScale = faceScale + (info.delta.y + info.delta.x) * sensitivity;
+                  onScaleChange(Math.max(0.1, Math.min(5, newScale)));
+                }}
+                variants={{
+                  hover: { opacity: 1, scale: 1 },
+                  initial: { opacity: 0, scale: 0.5 }
+                }}
+                initial="initial"
+                className="absolute -bottom-2 -right-2 w-6 h-6 bg-gold-500 rounded-full flex items-center justify-center cursor-nwse-resize shadow-lg z-[60] border border-black/20"
+              >
+                <div className="w-2 h-2 border-r-2 border-b-2 border-black" />
+              </motion.div>
+            </div>
           )}
-        </div>
+        </motion.div>
       )}
     </motion.div>
   );
