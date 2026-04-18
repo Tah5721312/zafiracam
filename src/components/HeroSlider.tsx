@@ -14,7 +14,10 @@ const desktopSlides = [
     id: 2,
     image: "/images/slider2.PNG",
   },
-
+  {
+    id: 3,
+    image: "/images/slider8.png",
+  },
 ];
 
 // Mobile slides
@@ -27,6 +30,11 @@ const mobileSlides = [
     id: 2,
     image: "/images/slider4.png",
   },
+  {
+    id: 3,
+    image: "/images/slider7.png",
+  },
+
 
 ];
 
