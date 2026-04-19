@@ -83,36 +83,36 @@ export default function CameraPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-obsidian-950 py-8 px-4">
+    <main className="min-h-screen bg-obsidian-950 py-6 md:py-12 px-4 sm:px-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
+        className="text-center mb-8 md:mb-12"
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold-500/10 rounded-full border border-gold-500/30 mb-4">
           <Sparkles size={18} className="text-gold-400" />
-          <span className="text-gold-300 text-sm font-medium">AI-Powered Face Try-On</span>
+          <span className="text-gold-300 text-xs md:text-sm font-medium uppercase tracking-wider">AI-Powered Face Try-On</span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-serif text-gold-100 mb-2">
-          Avatar Face Try-On
+        <h1 className="text-2xl sm:text-3xl md:text-5xl font-serif text-white mb-3">
+          Avatar <span className="text-gold-400">Face Try-On</span>
         </h1>
-        <p className="text-gold-400/70 text-sm max-w-md mx-auto">
-          Take a selfie and see your face automatically placed on different avatars.
+        <p className="text-gray-400 text-xs md:text-base max-w-md mx-auto leading-relaxed">
+          Take a selfie and see your face automatically placed on our exclusive collection avatars.
         </p>
       </motion.div>
 
-      <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-10">
           {/* Left Column - Camera */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-obsidian-900 to-obsidian-950 rounded-3xl p-6 border border-gold-500/20"
+            className="bg-obsidian-900/40 backdrop-blur-sm rounded-[2rem] p-5 md:p-8 border border-gold-500/10"
           >
-            <h2 className="text-lg font-medium text-gold-200 mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-full bg-gold-500/20 flex items-center justify-center text-sm text-gold-400">1</span>
+            <h2 className="text-base md:text-lg font-medium text-white mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-xs text-gold-400 font-bold">1</span>
               Capture Photo
             </h2>
             <Camera onCapture={handleCapture} onImageUpload={handleImageUpload} />
@@ -123,10 +123,10 @@ export default function CameraPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-gradient-to-br from-obsidian-900 to-obsidian-950 rounded-3xl p-6 border border-gold-500/20"
+            className="bg-obsidian-900/40 backdrop-blur-sm rounded-[2rem] p-5 md:p-8 border border-gold-500/10"
           >
-            <h2 className="text-lg font-medium text-gold-200 mb-4 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-full bg-gold-500/20 flex items-center justify-center text-sm text-gold-400">2</span>
+            <h2 className="text-base md:text-lg font-medium text-white mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 rounded-full bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-xs text-gold-400 font-bold">2</span>
               Avatar Preview
             </h2>
             
@@ -165,18 +165,20 @@ export default function CameraPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="h-[400px] flex flex-col items-center justify-center text-gold-400/50"
+                  className="min-h-[300px] md:h-[400px] flex flex-col items-center justify-center text-center p-6 bg-obsidian-950/50 rounded-2xl border border-gold-500/5"
                 >
-                  <div className="w-24 h-24 rounded-full bg-gold-500/10 flex items-center justify-center mb-4">
-                    <Sparkles size={40} className="text-gold-500/30" />
+                  <div className="w-20 h-20 rounded-full bg-gold-500/5 flex items-center justify-center mb-6 border border-gold-500/10">
+                    <Sparkles size={32} className="text-gold-500/20" />
                   </div>
-                  <p className="text-center">
-                    Capture or upload a photo first<br />
-                    to see the avatar preview
+                  <p className="text-gold-200/60 text-sm md:text-base mb-2 font-medium">
+                    Ready to see the magic?
+                  </p>
+                  <p className="text-gray-500 text-xs md:text-sm max-w-[240px]">
+                    Capture or upload a photo to automatically place your face on the avatar.
                   </p>
 
                   {captureError && (
-                    <p className="mt-4 text-center text-sm text-red-400 max-w-sm">
+                    <p className="mt-6 text-sm text-red-400/80 bg-red-400/5 px-4 py-2 rounded-lg border border-red-400/10 max-w-sm">
                       {captureError}
                     </p>
                   )}
