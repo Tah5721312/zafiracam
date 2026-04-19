@@ -87,6 +87,7 @@ export function useFaceDetection() {
     if (detection.landmarks) {
       const leftEye = detection.landmarks.getLeftEye();
       const rightEye = detection.landmarks.getRightEye();
+      const jaw = detection.landmarks.getJawOutline(); // chin landmarks
 
       if (leftEye.length > 0 && rightEye.length > 0) {
         const leftEyeCenter = getCenter(leftEye);
@@ -98,12 +99,32 @@ export function useFaceDetection() {
 
         const eyeDistance = Math.sqrt(dx * dx + dy * dy);
 
-        faceCenter = {
+        const eyeMidpoint = {
           x: (leftEyeCenter.x + rightEyeCenter.x) / 2,
-          y: (leftEyeCenter.y + rightEyeCenter.y) / 2 + eyeDistance * 0.45,
+          y: (leftEyeCenter.y + rightEyeCenter.y) / 2,
         };
 
-        cropSize = eyeDistance * 3.4;
+        // Use the bottom jaw point (chin tip) for vertical centering
+        let chinY = eyeMidpoint.y + eyeDistance * 1.2; // fallback
+        if (jaw && jaw.length > 0) {
+          // The chin tip is roughly the middle of the jaw outline (index 8 in 68-point model)
+          const chinPoint = jaw[Math.floor(jaw.length / 2)];
+          chinY = chinPoint.y;
+        }
+
+        // Center between the top of forehead and chin
+        // Forehead is approximately eyeDistance above the eyes
+        const foreheadY = eyeMidpoint.y - eyeDistance * 1.0;
+        const faceMidY = (foreheadY + chinY) / 2;
+
+        faceCenter = {
+          x: eyeMidpoint.x,
+          y: faceMidY,
+        };
+
+        // Crop size based on full face height (forehead to chin)
+        const faceHeight = chinY - foreheadY;
+        cropSize = faceHeight * 1.15; // slight padding around face
       }
     }
 
