@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Sparkles } from 'lucide-react';
+import { Sparkles, ChevronDown } from 'lucide-react';
 import { Camera } from './components/Camera';
 import { AvatarCanvas } from './components/AvatarCanvas';
 import { AvatarSelector } from './components/AvatarSelector';
@@ -18,6 +18,7 @@ export default function CameraPage() {
   const [faceScale, setFaceScale] = useState(1);
   const [faceOffsetX, setFaceOffsetX] = useState(0);
   const [faceOffsetY, setFaceOffsetY] = useState(0);
+  const previewRef = useRef<HTMLDivElement>(null);
     
   const { isLoading, error, loadModels, detectFace, cropFace } = useFaceDetection();
 
@@ -59,12 +60,16 @@ export default function CameraPage() {
 
       setCroppedFaceData(cropped);
 
-      // Adjust scale: the cropped face includes padding, so scale down to fit face area
-      // Typical face occupies ~60% of crop, so we scale by ~0.6 to fit
+      // Adjust scale
       const paddingRatio = 0.55;
       setFaceScale(paddingRatio);
       setFaceOffsetX(0);
       setFaceOffsetY(-selectedAvatar.faceArea.height * 0.05);
+
+      // Auto-scroll to preview section on mobile
+      setTimeout(() => {
+        previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
     };
     img.src = canvas.toDataURL();
   }, [detectFace, cropFace, selectedAvatar.faceArea.width, selectedAvatar.faceArea.height]);
@@ -103,7 +108,7 @@ export default function CameraPage() {
       </motion.div>
 
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-6 md:gap-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 md:gap-10">
           {/* Left Column - Camera */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -116,10 +121,24 @@ export default function CameraPage() {
               Capture Photo
             </h2>
             <Camera onCapture={handleCapture} onImageUpload={handleImageUpload} />
+
+            {/* Mobile hint to scroll down after capture */}
+            {croppedFaceData && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 flex items-center justify-center gap-2 text-gold-400/60 text-xs lg:hidden"
+              >
+                <ChevronDown size={14} className="animate-bounce" />
+                <span>Scroll down to see your avatar</span>
+                <ChevronDown size={14} className="animate-bounce" />
+              </motion.div>
+            )}
           </motion.div>
 
           {/* Right Column - Avatar Preview */}
           <motion.div
+            ref={previewRef}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -150,9 +169,8 @@ export default function CameraPage() {
                       setFaceOffsetX(x);
                       setFaceOffsetY(y);
                     }}
-                                      />
+                  />
 
-                                    
                   <AvatarSelector
                     avatars={avatars}
                     selectedAvatar={selectedAvatar}
@@ -165,7 +183,7 @@ export default function CameraPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="min-h-[300px] md:h-[400px] flex flex-col items-center justify-center text-center p-6 bg-obsidian-950/50 rounded-2xl border border-gold-500/5"
+                  className="min-h-[280px] md:h-[400px] flex flex-col items-center justify-center text-center p-6 bg-obsidian-950/50 rounded-2xl border border-gold-500/5"
                 >
                   <div className="w-20 h-20 rounded-full bg-gold-500/5 flex items-center justify-center mb-6 border border-gold-500/10">
                     <Sparkles size={32} className="text-gold-500/20" />
